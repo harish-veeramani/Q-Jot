@@ -1,0 +1,19 @@
+{
+  "name": "quickjot",
+  "version": "1.0.0",
+  "description": "Web app to quickly jot down notes",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harish-veeramani/Q-Jot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/harish-veeramani/Q-Jot/issues"
+  },
+  "homepage": "https://github.com/harish-veeramani/Q-Jot#readme"
+}
