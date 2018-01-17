@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/harish-veeramani/Q-Jot/issues"
   },
-  "homepage": "https://github.com/harish-veeramani/Q-Jot#readme"
+  "homepage": "https://github.com/harish-veeramani/Q-Jot#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
 }
