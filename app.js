@@ -2,6 +2,8 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+
 const app = express();
 const port = 5000;
 
@@ -22,7 +24,13 @@ app.engine('handlebars', exphbs({
 }));
 app.set('view engine', 'handlebars');
 
-//Routes
+//Body parser middleware
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
+app.use(bodyParser.json());
+
+//Get Routes
 app.get('/', (req, res) => {
     res.render("index", {
         title: "Welcome to Quick Jot"
@@ -30,12 +38,33 @@ app.get('/', (req, res) => {
 });
 
 app.get('/about', (req, res) => {
-    res.render('about')
-})
+    res.render('about');
+});
 
 app.get('/notes/add', (req, res) => {
-    res.render('notes/add')
-})
+    res.render('notes/add');
+});
+
+//Process Form
+app.post('/notes', (req, res) => {
+    var errors = [];
+    if (!req.body.title){
+        errors.push({text: "Please add a title"});
+    }
+    if (!req.body.details){
+        errors.push({text: "Please add details"});
+    }
+
+    if (errors.length > 0){
+        res.render('notes/add', {
+            errors: errors,
+            title: req.body.title,
+            details: req.body.details
+        });
+    } else {
+        res.send(req.body);
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
