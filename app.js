@@ -1,4 +1,4 @@
-//Vars
+//Constant vars
 const express = require('express');
 const exphbs = require('express-handlebars');
 const mongoose = require("mongoose");
@@ -11,6 +11,10 @@ mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost/quickjot-dev")
     .then(() => console.log("Connected to database"))
     .catch((error) => console.log(error));
+
+//Load Note model
+require("./models/Note");
+const Note = mongoose.model("notes");
 
 //Handlebars Middleware
 app.engine('handlebars', exphbs({
