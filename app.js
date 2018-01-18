@@ -33,6 +33,10 @@ app.get('/about', (req, res) => {
     res.render('about')
 })
 
+app.get('/notes/add', (req, res) => {
+    res.render('notes/add')
+})
+
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
