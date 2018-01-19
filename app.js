@@ -3,6 +3,7 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const methodOverride = require("method-override");
 
 const app = express();
 const port = 5000;
@@ -29,6 +30,9 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(bodyParser.json());
+
+//Method override middleware
+app.use(methodOverride("_method"));
 
 //Get Routes
 app.get('/', (req, res) => {
@@ -80,7 +84,9 @@ app.post('/notes', (req, res) => {
 
     if (errors.length > 0){
         res.render('notes/add', {
-            errorList: errors
+            errorList: errors,
+            title: req.body.title,
+            details: req.body.details
         });
     } else {
         var newNote = {
@@ -91,6 +97,21 @@ app.post('/notes', (req, res) => {
             res.redirect("/notes");
         });
     }
+});
+
+//Edit form
+app.put("/notes/:id", (req, res) => {
+    Note.findOne({
+        _id: req.params.id
+    })
+    .then(note => {
+        note.title = req.body.title;
+        note.details = req.body.details;
+
+        note.save().then(note => {
+            res.redirect("/notes");
+        });
+    });
 });
 
 app.listen(port, () => {
