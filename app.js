@@ -57,12 +57,16 @@ app.post('/notes', (req, res) => {
 
     if (errors.length > 0){
         res.render('notes/add', {
-            errors: errors,
-            title: req.body.title,
-            details: req.body.details
+            errorList: errors
         });
     } else {
-        res.send(req.body);
+        var newNote = {
+            title: req.body.title,
+            details: req.body.details
+        }
+        new Note(newNote).save().then(note => {
+            res.redirect("/notes");
+        });
     }
 });
 
