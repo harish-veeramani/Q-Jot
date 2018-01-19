@@ -41,6 +41,18 @@ app.get('/about', (req, res) => {
     res.render('about');
 });
 
+app.get('/notes', (req, res) => {
+    Note.find({})
+    .sort({
+        date: "desc"
+    })
+    .then(notes => {
+        res.render('notes/list', {
+            notes: notes
+        });
+    });
+});
+
 app.get('/notes/add', (req, res) => {
     res.render('notes/add');
 });
