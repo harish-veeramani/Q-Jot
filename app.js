@@ -57,6 +57,17 @@ app.get('/notes/add', (req, res) => {
     res.render('notes/add');
 });
 
+app.get('/notes/edit/:id', (req, res) => {
+    Note.findOne({
+        _id: req.params.id
+    })
+    .then(note => {
+        res.render('notes/edit', {
+            note: note
+        });
+    });
+});
+
 //Process Form
 app.post('/notes', (req, res) => {
     var errors = [];
