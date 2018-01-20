@@ -114,6 +114,15 @@ app.put("/notes/:id", (req, res) => {
     });
 });
 
+app.delete("/notes/:id", (req, res) => {
+    Note.remove({
+        _id: req.params.id
+    })
+    .then(() => {
+        res.redirect("/notes")
+    });
+});
+
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
