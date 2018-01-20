@@ -12,7 +12,7 @@ const port = 5000;
 
 mongoose.Promise = global.Promise;
 
-
+app.use(express.static(__dirname + '/public'));
 
 //Connect to MongoDB
 mongoose.connect("mongodb://localhost/quickjot-dev")
