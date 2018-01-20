@@ -4,11 +4,15 @@ const exphbs = require('express-handlebars');
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
+const flash = require("connect-flash");
+const session = require("express-session");
 
 const app = express();
 const port = 5000;
 
 mongoose.Promise = global.Promise;
+
+
 
 //Connect to MongoDB
 mongoose.connect("mongodb://localhost/quickjot-dev")
@@ -33,6 +37,23 @@ app.use(bodyParser.json());
 
 //Method override middleware
 app.use(methodOverride("_method"));
+
+//Express session middleware
+app.use(session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true
+}));
+
+app.use(flash());
+
+//Error message middleware
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash("success_msg");
+    res.locals.error_msg = req.flash("error_msg");
+    res.locals.error = req.flash("error");
+    next();
+});
 
 //Get Routes
 app.get('/', (req, res) => {
@@ -94,6 +115,7 @@ app.post('/notes', (req, res) => {
             details: req.body.details
         }
         new Note(newNote).save().then(note => {
+            req.flash("success_msg", "Note successfully added.");
             res.redirect("/notes");
         });
     }
@@ -109,6 +131,7 @@ app.put("/notes/:id", (req, res) => {
         note.details = req.body.details;
 
         note.save().then(note => {
+            req.flash("success_msg", "Note successfully edited.");
             res.redirect("/notes");
         });
     });
@@ -119,7 +142,8 @@ app.delete("/notes/:id", (req, res) => {
         _id: req.params.id
     })
     .then(() => {
-        res.redirect("/notes")
+        req.flash("success_msg", "Note successfully deleted.");
+        res.redirect("/notes");
     });
 });
 
