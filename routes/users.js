@@ -9,11 +9,20 @@ const User = mongoose.model("users");
 
 module.exports = router;
 
-//Login Route
+//Login routes
 router.get('/login', (req, res) => {
     res.render("users/login");
 });
 
+router.post("/login", (req, res, next) => {
+    passport.authenticate("local", {
+        successRedirect: "/ideas",
+        failureRedirect: "/users/login",
+        failureFlash: true
+    })(req, res, next);
+})
+
+//Register routes
 router.get('/register', (req, res) => {
     res.render("users/register");
 });
@@ -43,6 +52,12 @@ router.post('/register', (req, res) => {
                 req.flash("error_msg", "Email already registered");
                 res.redirect("/users/register");
             } else {
+                var newUser = new User({
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: req.body.password
+                });
+        
                 bcrypt.genSalt(10, (err, salt) => {
                     bcrypt.hash(newUser.password, salt, (err, hash) => {
                         if (err){
@@ -58,13 +73,8 @@ router.post('/register', (req, res) => {
                             return;
                         });
                     });
-                });
+                });  
             }
-        })
-        const newUser = new User({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password
         });
     }
 });

@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const flash = require("connect-flash");
 const session = require("express-session");
+const passport = require("passport");
 
 const app = express();
 const port = 5000;
@@ -13,6 +14,9 @@ const port = 5000;
 //Load and use routes
 const notes = require("./routes/notes");
 const users = require("./routes/users");
+
+//Passport Config
+require("./config/passport")(passport);
 
 mongoose.Promise = global.Promise;
 
