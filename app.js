@@ -9,7 +9,7 @@ const session = require("express-session");
 const passport = require("passport");
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 4567;
 
 //Load and use routes
 const notes = require("./routes/notes");
@@ -24,7 +24,8 @@ mongoose.Promise = global.Promise;
 app.use(express.static(__dirname + '/public'));
 
 //Connect to MongoDB
-mongoose.connect("mongodb://localhost/quickjot-dev")
+const db = require("./config/database");
+mongoose.connect(db.mongoURI)
     .then(() => console.log("Connected to database"))
     .catch((error) => console.log(error));
 
