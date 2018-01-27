@@ -16,6 +16,7 @@ const users = require("./routes/users");
 
 mongoose.Promise = global.Promise;
 
+//Static folder
 app.use(express.static(__dirname + '/public'));
 
 //Connect to MongoDB
