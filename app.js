@@ -10,6 +10,10 @@ const session = require("express-session");
 const app = express();
 const port = 5000;
 
+//Load and use routes
+const notes = require("./routes/notes");
+const users = require("./routes/users");
+
 mongoose.Promise = global.Promise;
 
 app.use(express.static(__dirname + '/public'));
@@ -18,10 +22,6 @@ app.use(express.static(__dirname + '/public'));
 mongoose.connect("mongodb://localhost/quickjot-dev")
     .then(() => console.log("Connected to database"))
     .catch((error) => console.log(error));
-
-//Load Note model
-require("./models/Note");
-const Note = mongoose.model("notes");
 
 //Handlebars Middleware
 app.engine('handlebars', exphbs({
@@ -47,7 +47,7 @@ app.use(session({
 
 app.use(flash());
 
-//Error message middleware
+//Message variables
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash("success_msg");
     res.locals.error_msg = req.flash("error_msg");
@@ -56,6 +56,9 @@ app.use((req, res, next) => {
 });
 
 //Get Routes
+app.use('/notes', notes);
+app.use('/users', users);
+
 app.get('/', (req, res) => {
     res.render("index", {
         title: "Welcome to Quick Jot"
@@ -64,87 +67,6 @@ app.get('/', (req, res) => {
 
 app.get('/about', (req, res) => {
     res.render('about');
-});
-
-app.get('/notes', (req, res) => {
-    Note.find({})
-    .sort({
-        date: "desc"
-    })
-    .then(notes => {
-        res.render('notes/list', {
-            notes: notes
-        });
-    });
-});
-
-app.get('/notes/add', (req, res) => {
-    res.render('notes/add');
-});
-
-app.get('/notes/edit/:id', (req, res) => {
-    Note.findOne({
-        _id: req.params.id
-    })
-    .then(note => {
-        res.render('notes/edit', {
-            note: note
-        });
-    });
-});
-
-//Process Form
-app.post('/notes', (req, res) => {
-    var errors = [];
-    if (!req.body.title){
-        errors.push({text: "Please add a title"});
-    }
-    if (!req.body.details){
-        errors.push({text: "Please add details"});
-    }
-
-    if (errors.length > 0){
-        res.render('notes/add', {
-            errorList: errors,
-            title: req.body.title,
-            details: req.body.details
-        });
-    } else {
-        var newNote = {
-            title: req.body.title,
-            details: req.body.details
-        }
-        new Note(newNote).save().then(note => {
-            req.flash("success_msg", "Note successfully added.");
-            res.redirect("/notes");
-        });
-    }
-});
-
-//Edit form
-app.put("/notes/:id", (req, res) => {
-    Note.findOne({
-        _id: req.params.id
-    })
-    .then(note => {
-        note.title = req.body.title;
-        note.details = req.body.details;
-
-        note.save().then(note => {
-            req.flash("success_msg", "Note successfully edited.");
-            res.redirect("/notes");
-        });
-    });
-});
-
-app.delete("/notes/:id", (req, res) => {
-    Note.remove({
-        _id: req.params.id
-    })
-    .then(() => {
-        req.flash("success_msg", "Note successfully deleted.");
-        res.redirect("/notes");
-    });
 });
 
 app.listen(port, () => {
