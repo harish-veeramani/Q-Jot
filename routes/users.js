@@ -22,6 +22,13 @@ router.post("/login", (req, res, next) => {
     })(req, res, next);
 })
 
+//Logout routes
+router.get("/logout", (req, res) => {
+    req.logout();
+    req.flash("success_msg", "You are logged out.");
+    res.redirect("/users/login");
+})
+
 //Register routes
 router.get('/register', (req, res) => {
     res.render("users/register");
