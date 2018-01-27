@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const {ensureAuthenticated} = require("../helpers/auth");
 
 //Load Note model
 require("../models/Note");
 const Note = mongoose.model("notes");
 
 //Note get routes
-router.get('/', (req, res) => {
+router.get('/', ensureAuthenticated, (req, res) => {
     Note.find({})
     .sort({
         date: "desc"
@@ -19,11 +20,11 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/add', (req, res) => {
+router.get('/add', ensureAuthenticated, (req, res) => {
     res.render('notes/add');
 });
 
-router.get('/edit/:id', (req, res) => {
+router.get('/edit/:id', ensureAuthenticated, (req, res) => {
     Note.findOne({
         _id: req.params.id
     })
@@ -35,7 +36,7 @@ router.get('/edit/:id', (req, res) => {
 });
 
 //Process Form
-router.post('/', (req, res) => {
+router.post('/', ensureAuthenticated, (req, res) => {
     var errors = [];
     if (!req.body.title){
         errors.push({text: "Please add a title"});
@@ -63,7 +64,7 @@ router.post('/', (req, res) => {
 });
 
 //Edit form
-router.put("/:id", (req, res) => {
+router.put("/:id", ensureAuthenticated, (req, res) => {
     Note.findOne({
         _id: req.params.id
     })
@@ -78,7 +79,7 @@ router.put("/:id", (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', ensureAuthenticated, (req, res) => {
     Note.remove({
         _id: req.params.id
     })
