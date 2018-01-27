@@ -9,7 +9,9 @@ const Note = mongoose.model("notes");
 
 //Note get routes
 router.get('/', ensureAuthenticated, (req, res) => {
-    Note.find({})
+    Note.find({
+        user: req.user.id
+    })
     .sort({
         date: "desc"
     })
@@ -29,9 +31,14 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
         _id: req.params.id
     })
     .then(note => {
-        res.render('notes/edit', {
-            note: note
-        });
+        if (note.user != req.user.id){
+            req.flash("error_msg", "You are not authorized to edit that note.");
+            res.redirect("/notes");
+        } else {
+            res.render('notes/edit', {
+                note: note
+            });
+        }
     });
 });
 
@@ -54,7 +61,8 @@ router.post('/', ensureAuthenticated, (req, res) => {
     } else {
         var newNote = {
             title: req.body.title,
-            details: req.body.details
+            details: req.body.details,
+            user: req.user.id
         }
         new Note(newNote).save().then(note => {
             req.flash("success_msg", "Note successfully added.");
