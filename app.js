@@ -9,7 +9,6 @@ const session = require("express-session");
 const passport = require("passport");
 
 const app = express();
-const port = process.env.PORT || 4567;
 
 //Load and use routes
 const notes = require("./routes/notes");
@@ -84,3 +83,4 @@ app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
 
+const port = process.env.PORT || 4567;
