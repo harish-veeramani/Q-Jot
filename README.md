@@ -3,7 +3,7 @@ QuickJot is a note-taking web application. Create and account and access your no
 
 ### Technology stack
 
-JavaScript, Node, Express, MongoDB, Boostrap.
+JavaScript, Node, Express, MongoDB, Bootstrap.
 
 ## Test it out
 Try the app [here](https://quickjot.herokuapp.com/). It is currently deployed on Heroku.
